@@ -4,8 +4,8 @@
     "description": "Smart Offline Invoice Generator",
     "start_url": "./index.html",
     "display": "standalone",
-    "background_color": "#f8fafc",
-    "theme_color": "#4f46e5",
+    "background_color": "#ffffff",
+    "theme_color": "#011936",
     "icons": [
         {
             "src": "https://cdn-icons-png.flaticon.com/512/3063/3063822.png",

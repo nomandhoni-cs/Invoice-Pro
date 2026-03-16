@@ -4,82 +4,59 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>InvoicePro | Smart Offline Generator</title>
+    <title>InvoicePro</title>
     <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#4f46e5">
+    <meta name="theme-color" content="#ffffff">
 
-    <!-- Icons and Fonts -->
+    <!-- Fonts & Icons -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
-        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
     <!-- PDF Libraries -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
     <style>
-        /* --- MODERN COLOR PALETTE & TYPOGRAPHY --- */
+        /* --- MINIMALIST COLOR PALETTE (User Interviews Theme) --- */
         :root {
-            --primary: #4f46e5;
-            /* Indigo 600 - Trust, Brand */
-            --primary-hover: #4338ca;
-            --secondary: #0ea5e9;
-            /* Sky Blue - Accents */
-            --success: #10b981;
-            /* Emerald - Money, Save, Generate */
-            --success-hover: #059669;
-            --danger: #f43f5e;
-            /* Rose - Delete, Remove */
-            --danger-light: #ffe4e6;
-            --warning: #f59e0b;
-            /* Amber - Warnings/Discounts */
+            --midnight: #011936;
+            --white: #ffffff;
+            --eden: #156152;
+            --eden-hover: #0e453a;
+            --midnight-light: #022b5e;
 
-            --bg-app: #f8fafc;
-            /* Slate 50 - Warm off-white background */
-            --surface: #ffffff;
-            /* Pure white cards */
-            --text-main: #0f172a;
-            /* Slate 900 */
-            --text-muted: #64748b;
-            /* Slate 500 */
-            --border: #e2e8f0;
-            /* Slate 200 */
-            --border-focus: #818cf8;
-            /* Indigo 400 */
-
-            --radius-lg: 16px;
-            --radius-md: 12px;
-            --radius-sm: 8px;
-            --shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.05);
-            --shadow-md: 0 4px 6px -1px rgba(15, 23, 42, 0.05), 0 2px 4px -1px rgba(15, 23, 42, 0.03);
+            --bg-gray: #f9fafb;
+            --border: #e5e7eb;
+            --text-muted: #6b7280;
+            --danger: #ef4444;
         }
 
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-family: 'Inter', sans-serif;
             -webkit-tap-highlight-color: transparent;
         }
 
         body {
-            background-color: var(--bg-app);
-            color: var(--text-main);
-            padding-bottom: 90px;
+            background-color: var(--white);
+            color: var(--midnight);
+            padding-bottom: 80px;
         }
 
-        /* Header & Navigation */
+        /* Minimalist Header */
         header {
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            color: white;
+            background: var(--white);
+            color: var(--midnight);
             padding: 20px;
-            box-shadow: var(--shadow-md);
+            text-align: center;
+            border-bottom: 1px solid var(--border);
             position: sticky;
             top: 0;
             z-index: 10;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            display: none;
+            /* Hidden during onboarding */
         }
 
         header h1 {
@@ -88,104 +65,75 @@
             letter-spacing: -0.5px;
         }
 
-        /* Desktop PWA Install Button (Hidden on Mobile) */
-        #install-container {
+        /* Desktop Install Banner */
+        #desktop-install-banner {
             display: none;
+            background-color: var(--bg-gray);
+            border-bottom: 1px solid var(--border);
+            padding: 12px 20px;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 0.85rem;
+            font-weight: 500;
         }
 
-        /* Hidden by default until prompt fires */
         .btn-install {
-            background: rgba(255, 255, 255, 0.2);
-            border: 1px solid rgba(255, 255, 255, 0.4);
-            color: white;
+            background: var(--midnight);
+            color: var(--white);
+            border: none;
             padding: 6px 14px;
-            border-radius: 20px;
-            font-size: 0.85rem;
+            border-radius: 4px;
             font-weight: 600;
             cursor: pointer;
-            backdrop-filter: blur(4px);
             transition: 0.2s;
         }
 
         .btn-install:hover {
-            background: rgba(255, 255, 255, 0.3);
+            background: var(--midnight-light);
         }
 
         @media (max-width: 768px) {
-            #install-container {
+            #desktop-install-banner {
                 display: none !important;
             }
-
-            /* FORCE hide on mobile */
         }
 
+        /* Navigation Tabs */
         .nav-tabs {
-            display: flex;
-            background: var(--surface);
-            margin: 20px 15px;
-            border-radius: var(--radius-lg);
-            padding: 6px;
-            box-shadow: var(--shadow-sm);
+            display: none;
+            border-bottom: 1px solid var(--border);
+            max-width: 800px;
+            margin: 0 auto;
         }
 
         .nav-tab {
             flex: 1;
-            padding: 12px;
+            padding: 16px;
             text-align: center;
             font-weight: 600;
             font-size: 0.95rem;
             color: var(--text-muted);
             cursor: pointer;
-            border-radius: var(--radius-md);
-            transition: 0.3s ease;
+            border-bottom: 2px solid transparent;
+            transition: 0.2s;
         }
 
         .nav-tab.active {
-            background: var(--bg-app);
-            color: var(--primary);
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+            color: var(--midnight);
+            border-bottom-color: var(--midnight);
         }
 
-        /* Onboarding Banner */
-        #onboarding-banner {
-            background: #eff6ff;
-            border: 1px solid #bfdbfe;
-            border-radius: var(--radius-md);
-            margin: 0 15px 20px 15px;
-            padding: 15px;
-            position: relative;
+        .nav-tab:hover:not(.active) {
+            color: var(--midnight);
         }
 
-        #onboarding-banner h3 {
-            color: #1e3a8a;
-            font-size: 1rem;
-            margin-bottom: 5px;
-        }
-
-        #onboarding-banner p {
-            color: #3b82f6;
-            font-size: 0.85rem;
-            line-height: 1.4;
-        }
-
-        .close-onboard {
-            position: absolute;
-            top: 15px;
-            right: 15px;
-            color: #60a5fa;
-            background: none;
-            border: none;
-            font-size: 1.2rem;
-            cursor: pointer;
-        }
-
-        /* Containers & Cards */
+        /* Containers */
         .view-section {
             display: none;
-            padding: 0 15px;
-            animation: fadeIn 0.4s ease;
+            padding: 24px 20px;
             max-width: 800px;
             margin: 0 auto;
+            animation: fadeIn 0.3s ease;
         }
 
         .view-section.active {
@@ -195,313 +143,247 @@
         @keyframes fadeIn {
             from {
                 opacity: 0;
-                transform: translateY(8px);
             }
 
             to {
                 opacity: 1;
-                transform: translateY(0);
             }
         }
 
-        .card {
-            background: var(--surface);
-            border-radius: var(--radius-lg);
-            padding: 20px;
-            margin-bottom: 20px;
-            box-shadow: var(--shadow-sm);
-            border: 1px solid var(--border);
-            border-top: 4px solid var(--primary);
-            /* Accent border */
-        }
-
-        .card.emerald-accent {
-            border-top-color: var(--success);
-        }
-
-        .card-title {
+        /* Forms & Inputs */
+        .section-title {
             font-size: 0.85rem;
             font-weight: 700;
-            color: var(--primary);
-            margin-bottom: 16px;
+            color: var(--midnight);
             text-transform: uppercase;
             letter-spacing: 1px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
+            margin: 30px 0 15px 0;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 8px;
         }
 
-        /* Inputs (Soft & Accessible) */
+        .section-title:first-child {
+            margin-top: 0;
+        }
+
         .input-group {
             margin-bottom: 16px;
-        }
-
-        .input-group:last-child {
-            margin-bottom: 0;
         }
 
         label {
             display: block;
             font-size: 0.85rem;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
             font-weight: 600;
-            color: var(--text-main);
+            color: var(--midnight);
         }
 
         input[type="text"],
         input[type="number"],
         input[type="date"] {
             width: 100%;
-            padding: 14px;
-            border: 1.5px solid var(--border);
-            border-radius: var(--radius-sm);
+            padding: 12px 14px;
+            border: 1px solid var(--border);
+            border-radius: 4px;
             font-size: 1rem;
-            color: var(--text-main);
-            background: #fcfcfc;
-            transition: all 0.2s;
+            color: var(--midnight);
+            background: var(--bg-gray);
+            transition: 0.2s;
         }
 
         input:focus {
             outline: none;
-            border-color: var(--border-focus);
-            background: white;
-            box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1);
+            border-color: var(--midnight);
+            background: var(--white);
         }
 
         .row {
             display: flex;
-            gap: 15px;
+            gap: 16px;
+            flex-wrap: wrap;
         }
 
         .row>div {
             flex: 1;
+            min-width: 140px;
         }
 
-        /* Item List UI */
-        .item-card {
-            background: var(--bg-app);
-            border: 1px solid var(--border);
-            border-radius: var(--radius-md);
-            padding: 15px;
-            margin-bottom: 12px;
-            position: relative;
-            transition: 0.2s;
-        }
-
-        .item-card:focus-within {
-            border-color: var(--border-focus);
-            background: white;
-        }
-
-        .item-card .remove-btn {
-            position: absolute;
-            top: -10px;
-            right: -10px;
-            color: var(--danger);
-            background: var(--danger-light);
-            width: 28px;
-            height: 28px;
-            border-radius: 50%;
-            border: none;
-            font-size: 0.9rem;
-            cursor: pointer;
+        /* Onboarding Fullscreen Overlay */
+        #onboarding-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--white);
+            z-index: 1000;
             display: flex;
-            align-items: center;
+            flex-direction: column;
             justify-content: center;
-            box-shadow: var(--shadow-sm);
-            transition: 0.2s;
+            align-items: center;
+            padding: 20px;
         }
 
-        .item-card .remove-btn:hover {
-            background: var(--danger);
-            color: white;
-            transform: scale(1.1);
+        .onboarding-card {
+            width: 100%;
+            max-width: 400px;
         }
 
-        .item-row-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-            margin-top: 12px;
+        .onboarding-card h2 {
+            color: var(--midnight);
+            margin-bottom: 8px;
+            font-size: 1.5rem;
+        }
+
+        .onboarding-card p {
+            color: var(--text-muted);
+            margin-bottom: 24px;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        /* Line Items */
+        .item-row {
+            display: flex;
+            gap: 10px;
+            align-items: flex-start;
+            margin-bottom: 12px;
+            padding: 12px;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            background: var(--white);
+            flex-wrap: wrap;
+        }
+
+        .item-row>.desc-box {
+            flex: 1 1 100%;
+            min-width: 200px;
+        }
+
+        .item-row>.num-box {
+            flex: 1;
+            min-width: 80px;
+        }
+
+        .remove-btn {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            padding: 10px 0;
+            font-size: 1.2rem;
+            cursor: pointer;
+        }
+
+        .remove-btn:hover {
+            color: var(--danger);
         }
 
         /* Buttons */
         .btn {
             width: 100%;
-            padding: 16px;
+            padding: 14px;
             border: none;
-            border-radius: var(--radius-sm);
+            border-radius: 4px;
             font-size: 1rem;
-            font-weight: 700;
+            font-weight: 600;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 10px;
-            transition: all 0.2s ease;
+            gap: 8px;
+            transition: 0.2s;
             margin-bottom: 12px;
-        }
-
-        .btn:active {
-            transform: scale(0.98);
         }
 
         .btn-outline {
             background: transparent;
-            border: 2px dashed var(--border-focus);
-            color: var(--primary);
+            border: 1px solid var(--border);
+            color: var(--midnight);
         }
 
         .btn-outline:hover {
-            background: rgba(79, 70, 229, 0.05);
+            border-color: var(--midnight);
+            background: var(--bg-gray);
         }
 
-        .btn-primary {
-            background: var(--primary);
-            color: white;
-            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+        .btn-eden {
+            background: var(--eden);
+            color: var(--white);
         }
 
-        .btn-primary:hover {
-            background: var(--primary-hover);
+        .btn-eden:hover {
+            background: var(--eden-hover);
         }
 
-        .btn-success {
-            background: var(--success);
-            color: white;
-            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+        .btn-midnight {
+            background: var(--midnight);
+            color: var(--white);
         }
 
-        .btn-success:hover {
-            background: var(--success-hover);
+        .btn-midnight:hover {
+            background: var(--midnight-light);
         }
 
-        .btn-secondary {
-            background: var(--text-main);
-            color: white;
-        }
-
-        /* History List UI & Empty State */
+        /* History */
         .history-item {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 16px 20px;
+            padding: 16px 0;
             border-bottom: 1px solid var(--border);
-            transition: 0.2s;
-        }
-
-        .history-item:hover {
-            background: var(--bg-app);
-        }
-
-        .history-item:last-child {
-            border-bottom: none;
         }
 
         .h-info h4 {
-            margin-bottom: 6px;
-            color: var(--text-main);
-            font-size: 1.05rem;
+            margin-bottom: 4px;
+            color: var(--midnight);
+            font-size: 1rem;
+            font-weight: 600;
         }
 
         .h-info p {
             font-size: 0.85rem;
             color: var(--text-muted);
-            display: flex;
-            align-items: center;
-            gap: 6px;
         }
 
         .h-price {
-            font-weight: 700;
-            color: var(--success);
+            font-weight: 600;
+            color: var(--eden);
         }
 
         .h-actions {
             display: flex;
-            gap: 8px;
+            gap: 12px;
         }
 
         .icon-btn {
-            width: 40px;
-            height: 40px;
-            border-radius: var(--radius-sm);
+            background: none;
             border: none;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 1rem;
+            color: var(--text-muted);
+            font-size: 1.1rem;
             cursor: pointer;
             transition: 0.2s;
         }
 
-        .edit-btn {
-            background: var(--bg-app);
-            color: var(--primary);
-            border: 1px solid var(--border);
-        }
-
-        .edit-btn:hover {
-            background: var(--primary);
-            color: white;
-            border-color: var(--primary);
-        }
-
-        .delete-btn {
-            background: var(--bg-app);
-            color: var(--danger);
-            border: 1px solid var(--border);
+        .icon-btn:hover {
+            color: var(--midnight);
         }
 
         .delete-btn:hover {
-            background: var(--danger);
-            color: white;
-            border-color: var(--danger);
+            color: var(--danger);
         }
 
         .empty-state {
             text-align: center;
-            padding: 50px 20px;
+            padding: 60px 20px;
         }
 
-        .empty-state-icon {
-            width: 80px;
-            height: 80px;
-            background: #e0e7ff;
-            color: var(--primary);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 2rem;
-            margin: 0 auto 20px auto;
+        .empty-state i {
+            font-size: 2.5rem;
+            color: var(--border);
+            margin-bottom: 16px;
         }
 
-        .empty-state h3 {
-            color: var(--text-main);
-            margin-bottom: 8px;
-        }
-
-        .empty-state p {
-            color: var(--text-muted);
-            font-size: 0.95rem;
-            line-height: 1.5;
-            margin-bottom: 25px;
-        }
-
-        /* Badge */
-        .badge {
-            background: var(--secondary);
-            color: white;
-            padding: 2px 8px;
-            border-radius: 12px;
-            font-size: 0.75rem;
-            font-weight: 700;
-        }
-
-        /* --- A4 TEMPLATE (Hidden for generation only - Kept intact for perfect layout) --- */
+        /* --- A4 TEMPLATE (Flexbox structured to eliminate exact top/bottom white space) --- */
         #render-container {
             position: absolute;
             top: -9999px;
@@ -512,14 +394,17 @@
 
         .invoice-wrapper {
             width: 210mm;
-            min-height: 297mm;
+            height: 296.5mm;
+            /* Exact A4 aspect ratio minus 0.5mm to prevent page break */
             background: white;
             padding: 10mm;
             box-sizing: border-box;
             font-family: Arial, sans-serif;
             color: black;
             font-size: 12px;
-            position: relative;
+            display: flex;
+            flex-direction: column;
+            /* Crucial for pushing footer to bottom */
         }
 
         .inv-header {
@@ -555,7 +440,7 @@
 
         .inv-party {
             text-align: center;
-            margin-bottom: 10px;
+            margin-bottom: 15px;
         }
 
         .inv-party span {
@@ -632,11 +517,16 @@
             font-size: 12px;
         }
 
+        .inv-footer-wrapper {
+            margin-top: auto;
+            /* Pushes everything below this to the exact bottom of the page */
+        }
+
         .inv-footer {
             display: flex;
             justify-content: space-between;
-            margin-top: 30px;
             font-size: 12px;
+            padding-top: 20px;
         }
 
         .inv-footer .decl {
@@ -670,93 +560,116 @@
 
 <body>
 
-    <header>
-        <h1><i class="fa-solid fa-bolt" style="color: #fcd34d;"></i> InvoicePro</h1>
-        <div id="install-container">
-            <button class="btn-install" id="btn-install"><i class="fa-solid fa-download"></i> Install App</button>
+    <!-- ONBOARDING OVERLAY -->
+    <div id="onboarding-screen">
+        <div class="onboarding-card">
+            <h2>Welcome to InvoicePro</h2>
+            <p>Set up your company details. This will appear on all your generated PDFs. You can change this later in
+                settings.</p>
+
+            <div class="input-group">
+                <label>Company Name</label>
+                <input type="text" id="ob-compName" value="HG Electrical & Electronics">
+            </div>
+            <div class="input-group">
+                <label>Address Line 1</label>
+                <input type="text" id="ob-compAddr1" value="Halima Shiraj Tower">
+            </div>
+            <div class="input-group">
+                <label>Address Line 2 (City/Zip)</label>
+                <input type="text" id="ob-compAddr2" value="Chandpur Cumilla (3500)">
+            </div>
+
+            <button class="btn btn-midnight" style="margin-top: 20px;" onclick="completeOnboarding()">Get Started <i
+                    class="fa-solid fa-arrow-right"></i></button>
         </div>
+    </div>
+
+    <!-- MAIN APP WRAPPER -->
+    <header id="main-header">
+        <h1>InvoicePro</h1>
     </header>
 
-    <div class="nav-tabs">
-        <div class="nav-tab active" id="tab-editor" onclick="switchTab('editor')"><i
-                class="fa-solid fa-pen-to-square"></i> Editor</div>
-        <div class="nav-tab" id="tab-history" onclick="switchTab('history')"><i
-                class="fa-solid fa-clock-rotate-left"></i> History</div>
+    <div id="desktop-install-banner">
+        <span>Install InvoicePro for offline desktop use.</span>
+        <button class="btn-install" id="btn-install">Install App</button>
     </div>
 
-    <!-- Onboarding Welcome Banner -->
-    <div id="onboarding-banner" style="display: none;">
-        <button class="close-onboard" onclick="dismissOnboarding()"><i class="fa-solid fa-xmark"></i></button>
-        <h3>Welcome to InvoicePro! 👋</h3>
-        <p>Your data is saved securely on this device. Generate professional A4 PDFs instantly without needing an
-            internet connection.</p>
+    <div class="nav-tabs" id="main-nav">
+        <div class="nav-tab active" id="tab-editor" onclick="switchTab('editor')">Editor</div>
+        <div class="nav-tab" id="tab-history" onclick="switchTab('history')">History</div>
+        <div class="nav-tab" id="tab-settings" onclick="switchTab('settings')"><i class="fa-solid fa-gear"></i></div>
     </div>
 
-    <!-- EDITOR VIEW -->
+    <!-- 1. EDITOR VIEW -->
     <div id="view-editor" class="view-section active">
-
-        <div class="card">
-            <div class="card-title"><i class="fa-regular fa-file-lines"></i> Document Details</div>
-            <div class="row">
-                <div class="input-group">
-                    <label>Invoice No.</label>
-                    <input type="text" id="invNo" placeholder="e.g. 659" oninput="saveDraft()">
-                </div>
-                <div class="input-group">
-                    <label>Date</label>
-                    <input type="date" id="invDate" oninput="saveDraft()">
-                </div>
-            </div>
-        </div>
-
-        <div class="card">
-            <div class="card-title"><i class="fa-regular fa-user"></i> Customer Info</div>
+        <div class="section-title">Document</div>
+        <div class="row">
             <div class="input-group">
-                <label>Party Name</label>
-                <input type="text" id="partyName" placeholder="e.g. Hasan Telecom" oninput="saveDraft()">
+                <label>Invoice No.</label>
+                <input type="text" id="invNo" placeholder="659" oninput="saveDraft()">
             </div>
             <div class="input-group">
-                <label>Phone / Details</label>
-                <input type="text" id="partyPhone" placeholder="017XXXXXX" oninput="saveDraft()">
+                <label>Date</label>
+                <input type="date" id="invDate" oninput="saveDraft()">
             </div>
         </div>
 
-        <div class="card">
-            <div class="card-title" style="justify-content: space-between;">
-                <span><i class="fa-solid fa-box-open"></i> Line Items</span>
-                <span class="badge" id="item-count">0</span>
-            </div>
-            <div id="items-container"></div>
-            <button class="btn btn-outline" onclick="addItem()"><i class="fa-solid fa-plus"></i> Add New Item</button>
+        <div class="section-title">Customer</div>
+        <div class="input-group">
+            <label>Party Name</label>
+            <input type="text" id="partyName" placeholder="Client Name" oninput="saveDraft()">
+        </div>
+        <div class="input-group">
+            <label>Contact Details</label>
+            <input type="text" id="partyPhone" placeholder="Phone or Address" oninput="saveDraft()">
         </div>
 
-        <div class="card emerald-accent">
-            <div class="card-title" style="color: var(--success);"><i class="fa-solid fa-tag"></i> Discount</div>
-            <div class="input-group">
-                <label>Discount Percentage (%)</label>
-                <input type="number" id="discountPercent" value="0" min="0" max="100" oninput="saveDraft()">
-            </div>
+        <div class="section-title">Line Items</div>
+        <div id="items-container"></div>
+        <button class="btn btn-outline" onclick="addItem()"><i class="fa-solid fa-plus"></i> Add Item</button>
+
+        <div class="section-title">Totals</div>
+        <div class="input-group">
+            <label>Discount (%)</label>
+            <input type="number" id="discountPercent" value="0" min="0" max="100" oninput="saveDraft()">
         </div>
 
-        <div style="margin-top: 30px;">
-            <button class="btn btn-success" onclick="saveToHistory()"><i class="fa-solid fa-cloud-arrow-up"></i> Save to
+        <div style="margin-top: 40px;">
+            <button class="btn btn-midnight" onclick="saveToHistory()"><i class="fa-solid fa-check"></i> Save to
                 History</button>
-            <div class="row" style="margin-top: 15px;">
-                <button class="btn btn-primary" onclick="generatePDF()"><i class="fa-solid fa-file-pdf"></i> Download
+            <div class="row" style="margin-top: 10px;">
+                <button class="btn btn-eden" onclick="generatePDF()"><i class="fa-solid fa-file-pdf"></i> Download
                     PDF</button>
-                <button class="btn btn-secondary" onclick="generatePNG()"><i class="fa-solid fa-image"></i> Save as
+                <button class="btn btn-outline" onclick="generatePNG()"><i class="fa-solid fa-image"></i> Save
                     PNG</button>
             </div>
         </div>
     </div>
 
-    <!-- HISTORY VIEW -->
+    <!-- 2. HISTORY VIEW -->
     <div id="view-history" class="view-section">
-        <div class="card" style="padding: 0; overflow: hidden; border-top-color: var(--secondary);">
-            <div id="history-list">
-                <!-- Injected via JS -->
-            </div>
+        <div id="history-list"></div>
+    </div>
+
+    <!-- 3. SETTINGS VIEW -->
+    <div id="view-settings" class="view-section">
+        <div class="section-title">Your Company Details</div>
+        <div class="input-group">
+            <label>Company Name</label>
+            <input type="text" id="set-compName">
         </div>
+        <div class="input-group">
+            <label>Address Line 1</label>
+            <input type="text" id="set-compAddr1">
+        </div>
+        <div class="input-group">
+            <label>Address Line 2 (City/Zip)</label>
+            <input type="text" id="set-compAddr2">
+        </div>
+
+        <button class="btn btn-eden" style="margin-top: 20px;" onclick="saveSettings()"><i
+                class="fa-solid fa-floppy-disk"></i> Save Settings</button>
     </div>
 
     <!-- HIDDEN A4 TEMPLATE -->
@@ -768,16 +681,18 @@
                     <p>Ref. No.</p>
                 </div>
                 <div class="inv-company-center">
-                    <h3>HG Electrical & Electronics</h3>
-                    <p>Halima Shiraj Tower</p>
-                    <p>Chandpur Cumilla (3500)</p>
+                    <h3 id="t-compName">HG Electrical & Electronics</h3>
+                    <p id="t-compAddr1">Halima Shiraj Tower</p>
+                    <p id="t-compAddr2">Chandpur Cumilla (3500)</p>
                 </div>
                 <div>
                     <p>Dated <strong id="t-invDate"></strong></p>
                 </div>
             </div>
+
             <div class="inv-title">INVOICE</div>
             <div class="inv-party">Party : <span id="t-partyName"></span><br><span id="t-partyPhone"></span></div>
+
             <table>
                 <thead>
                     <tr>
@@ -791,16 +706,21 @@
                 </thead>
                 <tbody id="t-items-body"></tbody>
             </table>
+
             <div class="words-section">Amount Chargeable (in words)<br><span id="t-words" class="bold"></span> <span
                     style="float:right">E. & O.E</span></div>
-            <div class="inv-footer">
-                <div class="decl"><span style="text-decoration: underline;">Declaration</span><br>We declare that this
-                    invoice shows the actual price of the<br>goods described and that all particulars are true
-                    and<br>correct.</div>
-                <div class="sig"><span class="bold">for HG Electrical & Electronics</span><br><br><br><span>Authorised
-                        Signatory</span></div>
+
+            <!-- Footer Wrapper utilizes margin-top: auto to pin to bottom -->
+            <div class="inv-footer-wrapper">
+                <div class="inv-footer">
+                    <div class="decl"><span style="text-decoration: underline;">Declaration</span><br>We declare that
+                        this invoice shows the actual price of the<br>goods described and that all particulars are true
+                        and<br>correct.</div>
+                    <div class="sig"><span class="bold">for <span id="t-compNameSig">HG Electrical &
+                                Electronics</span></span><br><br><br><span>Authorised Signatory</span></div>
+                </div>
+                <div class="computer-gen">This is a Computer Generated Invoice</div>
             </div>
-            <div class="computer-gen">This is a Computer Generated Invoice</div>
         </div>
     </div>
 
@@ -809,23 +729,21 @@
         let currentInvoiceId = null;
         let items = [];
         let invoiceHistory = [];
+        let companyProfile = { name: "", addr1: "", addr2: "" };
 
-        // --- PWA INSTALL LOGIC (Desktop only visually) ---
+        // --- PWA INSTALL LOGIC ---
         let deferredPrompt;
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault();
             deferredPrompt = e;
-            // Only show button if the CSS media query allows it (i.e. not on mobile)
-            document.getElementById('install-container').style.display = 'block';
+            document.getElementById('desktop-install-banner').style.display = 'flex';
         });
 
         document.getElementById('btn-install').addEventListener('click', async () => {
             if (deferredPrompt !== null) {
                 deferredPrompt.prompt();
                 const { outcome } = await deferredPrompt.userChoice;
-                if (outcome === 'accepted') {
-                    document.getElementById('install-container').style.display = 'none';
-                }
+                if (outcome === 'accepted') document.getElementById('desktop-install-banner').style.display = 'none';
                 deferredPrompt = null;
             }
         });
@@ -835,38 +753,68 @@
             document.getElementById('invDate').valueAsDate = new Date();
             loadHistoryFromStorage();
 
-            // Check for Onboarding
-            if (!localStorage.getItem('invoiceApp_onboarded')) {
-                document.getElementById('onboarding-banner').style.display = 'block';
-                // Pre-fill a demo item to show how it works
-                items = [{ desc: "BRILUX 22 Watt Day Light", qty: 48, rate: 209.30 }];
+            // Check Company Profile
+            const savedProfile = localStorage.getItem('invoiceApp_companyProfile');
+            if (savedProfile) {
+                companyProfile = JSON.parse(savedProfile);
+                unlockApp();
+                loadDraftOrNew();
             } else {
-                // Try loading draft
-                const draft = localStorage.getItem('invoiceApp_draft');
-                if (draft) {
-                    loadIntoEditor(JSON.parse(draft));
-                    return; // exit early so we don't overwrite draft
-                } else {
-                    items = [{ desc: "", qty: 1, rate: 0 }];
-                }
+                // Show Onboarding
+                document.getElementById('onboarding-screen').style.display = 'flex';
             }
-            renderAppItems();
         };
 
-        function dismissOnboarding() {
-            document.getElementById('onboarding-banner').style.display = 'none';
-            localStorage.setItem('invoiceApp_onboarded', 'true');
+        function completeOnboarding() {
+            companyProfile = {
+                name: document.getElementById('ob-compName').value || 'HG Electrical & Electronics',
+                addr1: document.getElementById('ob-compAddr1').value || 'Halima Shiraj Tower',
+                addr2: document.getElementById('ob-compAddr2').value || 'Chandpur Cumilla (3500)'
+            };
+            localStorage.setItem('invoiceApp_companyProfile', JSON.stringify(companyProfile));
+            document.getElementById('onboarding-screen').style.display = 'none';
+            unlockApp();
+            loadDraftOrNew();
+        }
+
+        function unlockApp() {
+            document.getElementById('main-header').style.display = 'block';
+            document.getElementById('main-nav').style.display = 'flex';
+
+            // Populate Settings tab inputs
+            document.getElementById('set-compName').value = companyProfile.name;
+            document.getElementById('set-compAddr1').value = companyProfile.addr1;
+            document.getElementById('set-compAddr2').value = companyProfile.addr2;
+        }
+
+        function saveSettings() {
+            companyProfile = {
+                name: document.getElementById('set-compName').value,
+                addr1: document.getElementById('set-compAddr1').value,
+                addr2: document.getElementById('set-compAddr2').value
+            };
+            localStorage.setItem('invoiceApp_companyProfile', JSON.stringify(companyProfile));
+            alert("Settings Saved Successfully!");
+        }
+
+        function loadDraftOrNew() {
+            const draft = localStorage.getItem('invoiceApp_draft');
+            if (draft) {
+                loadIntoEditor(JSON.parse(draft));
+            } else {
+                items = [{ desc: "BRILUX 22 Watt Day Light", qty: 48, rate: 209.30 }];
+                renderAppItems();
+            }
         }
 
         // --- NAVIGATION ---
         function switchTab(tab) {
             document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
             document.querySelectorAll('.view-section').forEach(v => v.classList.remove('active'));
-
             document.getElementById(`tab-${tab}`).classList.add('active');
             document.getElementById(`view-${tab}`).classList.add('active');
-
             if (tab === 'history') renderHistoryList();
+            window.scrollTo(0, 0);
         }
 
         // --- DATABASE LOGIC ---
@@ -880,7 +828,7 @@
         }
 
         function saveDraft() {
-            const rows = document.querySelectorAll('.item-card');
+            const rows = document.querySelectorAll('.item-row');
             items = [];
             rows.forEach(row => {
                 items.push({
@@ -897,18 +845,16 @@
                 partyName: document.getElementById('partyName').value,
                 partyPhone: document.getElementById('partyPhone').value,
                 discountPercent: document.getElementById('discountPercent').value,
-                items: items,
-                timestamp: Date.now()
+                items: items
             };
             localStorage.setItem('invoiceApp_draft', JSON.stringify(currentData));
-            document.getElementById('item-count').innerText = items.length;
             return currentData;
         }
 
         function saveToHistory() {
             const data = saveDraft();
             if (!data.invNo || !data.partyName) {
-                alert("Please enter an Invoice No. and Party Name to save.");
+                alert("Please enter an Invoice No. and Party Name.");
                 return;
             }
 
@@ -922,16 +868,10 @@
             }
 
             saveHistoryToStorage();
-
-            // Visual feedback
-            const btn = document.querySelector('.btn-success');
+            const btn = document.querySelector('.btn-midnight');
             const originalText = btn.innerHTML;
-            btn.innerHTML = '<i class="fa-solid fa-check"></i> Saved!';
-            btn.style.background = '#059669';
-            setTimeout(() => {
-                btn.innerHTML = originalText;
-                btn.style.background = 'var(--success)';
-            }, 2000);
+            btn.innerHTML = '<i class="fa-solid fa-check"></i> Saved';
+            setTimeout(() => { btn.innerHTML = originalText; }, 2000);
         }
 
         function loadIntoEditor(data) {
@@ -944,17 +884,14 @@
 
             items = data.items || [];
             if (items.length === 0) items.push({ desc: "", qty: 1, rate: 0 });
-
             renderAppItems();
             switchTab('editor');
-            window.scrollTo(0, 0);
         }
 
         function deleteFromHistory(id) {
-            if (confirm("Are you sure you want to delete this invoice forever?")) {
+            if (confirm("Delete this invoice forever?")) {
                 invoiceHistory = invoiceHistory.filter(i => i.id !== id);
                 saveHistoryToStorage();
-
                 if (currentInvoiceId === id) {
                     currentInvoiceId = null;
                     localStorage.removeItem('invoiceApp_draft');
@@ -982,26 +919,23 @@
             container.innerHTML = '';
             items.forEach((item, index) => {
                 container.innerHTML += `
-                    <div class="item-card">
-                        <button class="remove-btn" onclick="removeItem(${index})" title="Remove Item"><i class="fa-solid fa-xmark"></i></button>
-                        <div class="input-group" style="margin-bottom:0;">
-                            <label>Item Description</label>
-                            <input type="text" class="i-desc" value="${item.desc}" placeholder="Enter product name..." oninput="saveDraft()">
+                    <div class="item-row">
+                        <div class="input-group desc-box" style="margin:0;">
+                            <label>Description</label>
+                            <input type="text" class="i-desc" value="${item.desc}" placeholder="Item name..." oninput="saveDraft()">
                         </div>
-                        <div class="item-row-grid">
-                            <div class="input-group">
-                                <label>Qty (Pcs)</label>
-                                <input type="number" class="i-qty" value="${item.qty}" placeholder="0" oninput="saveDraft()">
-                            </div>
-                            <div class="input-group">
-                                <label>Rate (TK)</label>
-                                <input type="number" class="i-rate" value="${item.rate}" placeholder="0.00" oninput="saveDraft()">
-                            </div>
+                        <div class="input-group num-box" style="margin:0;">
+                            <label>Qty</label>
+                            <input type="number" class="i-qty" value="${item.qty}" oninput="saveDraft()">
                         </div>
+                        <div class="input-group num-box" style="margin:0;">
+                            <label>Rate</label>
+                            <input type="number" class="i-rate" value="${item.rate}" oninput="saveDraft()">
+                        </div>
+                        <button class="remove-btn" onclick="removeItem(${index})" title="Remove"><i class="fa-solid fa-xmark"></i></button>
                     </div>
                 `;
             });
-            document.getElementById('item-count').innerText = items.length;
         }
 
         function addItem() { items.push({ desc: "", qty: 1, rate: 0 }); renderAppItems(); saveDraft(); }
@@ -1015,15 +949,15 @@
             if (invoiceHistory.length === 0) {
                 container.innerHTML = `
                     <div class="empty-state">
-                        <div class="empty-state-icon"><i class="fa-solid fa-folder-open"></i></div>
-                        <h3>No invoices saved yet</h3>
-                        <p>Your generated invoices will securely live here, offline and ready for access anytime.</p>
-                        <button class="btn btn-primary" onclick="startNewInvoice()"><i class="fa-solid fa-plus"></i> Create First Invoice</button>
+                        <i class="fa-regular fa-folder-open"></i>
+                        <h3>It's empty here</h3>
+                        <p>Saved invoices will appear here.</p>
+                        <button class="btn btn-outline" style="max-width: 200px; margin: 0 auto;" onclick="startNewInvoice()">Create Invoice</button>
                     </div>`;
                 return;
             }
 
-            container.innerHTML += `<div style="padding: 15px; border-bottom: 1px solid var(--border); background: var(--bg-app);"><button class="btn btn-outline" style="margin:0;" onclick="startNewInvoice()"><i class="fa-solid fa-plus"></i> Create New Blank Invoice</button></div>`;
+            container.innerHTML += `<button class="btn btn-outline" style="margin-bottom: 20px;" onclick="startNewInvoice()"><i class="fa-solid fa-plus"></i> Blank Invoice</button>`;
 
             invoiceHistory.forEach(inv => {
                 let total = inv.items.reduce((sum, item) => sum + (item.qty * item.rate), 0);
@@ -1034,13 +968,12 @@
                 container.innerHTML += `
                     <div class="history-item">
                         <div class="h-info">
-                            <h4>Inv #${inv.invNo || 'Draft'}</h4>
-                            <p><i class="fa-regular fa-calendar" style="color:var(--secondary)"></i> ${dateStr} <span style="margin: 0 5px;">•</span> <span class="h-price">TK ${finalTotal.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</span></p>
-                            <p style="margin-top:6px;"><i class="fa-solid fa-user-tag" style="color:var(--text-muted)"></i> ${inv.partyName || 'Unknown Customer'}</p>
+                            <h4>#${inv.invNo || 'Draft'} &mdash; <span class="h-price">TK ${finalTotal.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</span></h4>
+                            <p>${dateStr} &bull; ${inv.partyName || 'Unknown Customer'}</p>
                         </div>
                         <div class="h-actions">
-                            <button class="icon-btn edit-btn" onclick='loadIntoEditor(${JSON.stringify(inv)})'><i class="fa-solid fa-pen"></i></button>
-                            <button class="icon-btn delete-btn" onclick="deleteFromHistory('${inv.id}')"><i class="fa-solid fa-trash"></i></button>
+                            <button class="icon-btn" title="Edit" onclick='loadIntoEditor(${JSON.stringify(inv)})'><i class="fa-solid fa-pen"></i></button>
+                            <button class="icon-btn delete-btn" title="Delete" onclick="deleteFromHistory('${inv.id}')"><i class="fa-solid fa-trash"></i></button>
                         </div>
                     </div>
                 `;
@@ -1075,13 +1008,21 @@
             return wordStr === '' ? 'Zero' : wordStr;
         }
 
-        // --- A4 RENDER ENGINE (Unchanged to protect strict layout requirement) ---
+        // --- A4 RENDER ENGINE ---
         function populateTemplate() {
             saveDraft();
+
+            // Map Dynamic Company Info
+            document.getElementById('t-compName').innerText = companyProfile.name;
+            document.getElementById('t-compNameSig').innerText = companyProfile.name;
+            document.getElementById('t-compAddr1').innerText = companyProfile.addr1;
+            document.getElementById('t-compAddr2').innerText = companyProfile.addr2;
+
             document.getElementById('t-invNo').innerText = document.getElementById('invNo').value;
             document.getElementById('t-invDate').innerText = formatDateDisplay(document.getElementById('invDate').value);
             document.getElementById('t-partyName').innerText = document.getElementById('partyName').value;
             document.getElementById('t-partyPhone').innerText = document.getElementById('partyPhone').value;
+
             const tbody = document.getElementById('t-items-body'); tbody.innerHTML = '';
             let totalQty = 0, subTotal = 0;
 
@@ -1096,12 +1037,13 @@
 
             if (discPercent > 0) tbody.innerHTML += `<tr><td class="col-sl"></td><td class="col-desc" style="padding-top:20px; font-style: italic;">Less :<span style="float:right" class="bold">Discount Sales</span></td><td class="col-qty"></td><td class="col-rate text-right">(-)${discPercent}%</td><td class="col-per">%</td><td class="col-amt bold" style="padding-top:20px;">(-)${discAmount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</td></tr>`;
 
+            // Adding visual empty rows to mimic the image structure
             const emptyRowsNeeded = 20 - items.length - (discPercent > 0 ? 1 : 0);
             for (let i = 0; i < emptyRowsNeeded; i++) tbody.innerHTML += `<tr><td></td><td></td><td></td><td></td><td></td><td></td></tr>`;
 
             tbody.innerHTML += `<tr class="totals-row"><td></td><td></td><td></td><td></td><td></td><td class="col-amt">${subTotal.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</td></tr>`;
             tbody.innerHTML += `<tr class="final-total"><td></td><td class="text-right">Total</td><td class="col-qty">${totalQty} Pcs</td><td></td><td></td><td class="col-amt">TK ${finalTotal.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</td></tr>`;
-            document.getElementById('t-words').innerText = "Bangladeshi Taka " + numberToWordsIndian(finalTotal) + " Only";
+            document.getElementById('t-words').innerText = "BDT " + numberToWordsIndian(finalTotal) + " Only";
         }
 
         // --- EXPORT FUNCTIONS ---
@@ -1112,10 +1054,13 @@
             container.style.position = 'relative'; container.style.visibility = 'visible'; container.style.top = '0'; container.style.left = '0';
 
             const opt = {
-                margin: 0, filename: 'Invoice_' + (document.getElementById('invNo').value || 'Draft') + '.pdf',
-                image: { type: 'jpeg', quality: 1 }, html2canvas: { scale: 2, useCORS: true },
+                margin: 0,
+                filename: 'Invoice_' + (document.getElementById('invNo').value || 'Draft') + '.pdf',
+                image: { type: 'jpeg', quality: 1 },
+                html2canvas: { scale: 2, useCORS: true },
                 jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
             };
+
             html2pdf().set(opt).from(element).save().then(() => {
                 container.style.position = 'absolute'; container.style.visibility = 'hidden'; container.style.top = '-9999px'; container.style.left = '-9999px';
             });
@@ -1135,7 +1080,7 @@
             });
         }
 
-        // PWA SW
+        // PWA SW Registration
         if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(err => console.log(err));
     </script>
 </body>
