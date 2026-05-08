@@ -17,7 +17,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
     <style>
-        /* --- MINIMALIST COLOR PALETTE (User Interviews Theme) --- */
         :root {
             --midnight: #011936;
             --white: #ffffff;
@@ -29,6 +28,8 @@
             --border: #e5e7eb;
             --text-muted: #6b7280;
             --danger: #ef4444;
+            --warning: #f59e0b;
+            --success: #10b981;
         }
 
         * {
@@ -45,7 +46,6 @@
             padding-bottom: 80px;
         }
 
-        /* Minimalist Header */
         header {
             background: var(--white);
             color: var(--midnight);
@@ -56,7 +56,6 @@
             top: 0;
             z-index: 10;
             display: none;
-            /* Hidden during onboarding */
         }
 
         header h1 {
@@ -324,6 +323,79 @@
             background: var(--midnight-light);
         }
 
+        /* Payment Summary Card */
+        .payment-summary-card {
+            background: var(--bg-gray);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 16px;
+            margin-top: 12px;
+        }
+
+        .payment-summary-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            font-size: 0.95rem;
+        }
+
+        .payment-summary-row.total-row {
+            border-top: 2px solid var(--midnight);
+            margin-top: 8px;
+            padding-top: 12px;
+            font-weight: 700;
+            font-size: 1.05rem;
+        }
+
+        .payment-summary-row .label {
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        .payment-summary-row .value {
+            font-weight: 600;
+            color: var(--midnight);
+        }
+
+        .payment-summary-row .value.paid {
+            color: var(--success);
+        }
+
+        .payment-summary-row .value.due {
+            color: var(--danger);
+        }
+
+        .payment-summary-row .value.fully-paid {
+            color: var(--success);
+        }
+
+        /* Payment Status Badge */
+        .status-badge {
+            display: inline-block;
+            padding: 2px 10px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .status-paid {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .status-partial {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .status-unpaid {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
         /* History */
         .history-item {
             display: flex;
@@ -331,6 +403,12 @@
             align-items: center;
             padding: 16px 0;
             border-bottom: 1px solid var(--border);
+            gap: 12px;
+        }
+
+        .h-info {
+            flex: 1;
+            min-width: 0;
         }
 
         .h-info h4 {
@@ -345,6 +423,12 @@
             color: var(--text-muted);
         }
 
+        .h-info .h-payment-line {
+            font-size: 0.8rem;
+            margin-top: 4px;
+            color: var(--text-muted);
+        }
+
         .h-price {
             font-weight: 600;
             color: var(--eden);
@@ -353,6 +437,7 @@
         .h-actions {
             display: flex;
             gap: 12px;
+            flex-shrink: 0;
         }
 
         .icon-btn {
@@ -383,7 +468,7 @@
             margin-bottom: 16px;
         }
 
-        /* --- A4 TEMPLATE (Flexbox structured to eliminate exact top/bottom white space) --- */
+        /* --- A4 TEMPLATE --- */
         #render-container {
             position: absolute;
             top: -9999px;
@@ -395,7 +480,6 @@
         .invoice-wrapper {
             width: 210mm;
             height: 296.5mm;
-            /* Exact A4 aspect ratio minus 0.5mm to prevent page break */
             background: white;
             padding: 10mm;
             box-sizing: border-box;
@@ -404,7 +488,6 @@
             font-size: 12px;
             display: flex;
             flex-direction: column;
-            /* Crucial for pushing footer to bottom */
         }
 
         .inv-header {
@@ -517,9 +600,39 @@
             font-size: 12px;
         }
 
+        /* Payment Info Section on Invoice */
+        .inv-payment-info {
+            margin-top: 10px;
+            border: 1px solid black;
+            padding: 6px 10px;
+            font-size: 12px;
+        }
+
+        .inv-payment-info table {
+            border: none;
+            width: auto;
+            margin-left: auto;
+        }
+
+        .inv-payment-info table td {
+            border: none;
+            padding: 2px 10px;
+            font-size: 12px;
+        }
+
+        .inv-payment-info .payment-label {
+            text-align: right;
+            font-weight: normal;
+            color: #333;
+        }
+
+        .inv-payment-info .payment-value {
+            text-align: right;
+            font-weight: bold;
+        }
+
         .inv-footer-wrapper {
             margin-top: auto;
-            /* Pushes everything below this to the exact bottom of the page */
         }
 
         .inv-footer {
@@ -554,6 +667,37 @@
 
         .bold {
             font-weight: bold;
+        }
+
+        /* History filter tabs */
+        .history-filters {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+        }
+
+        .filter-chip {
+            padding: 6px 14px;
+            border-radius: 20px;
+            border: 1px solid var(--border);
+            background: var(--white);
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+            color: var(--text-muted);
+        }
+
+        .filter-chip.active {
+            background: var(--midnight);
+            color: var(--white);
+            border-color: var(--midnight);
+        }
+
+        .filter-chip:hover:not(.active) {
+            border-color: var(--midnight);
+            color: var(--midnight);
         }
     </style>
 </head>
@@ -629,13 +773,50 @@
         <div id="items-container"></div>
         <button class="btn btn-outline" onclick="addItem()"><i class="fa-solid fa-plus"></i> Add Item</button>
 
-        <div class="section-title">Totals</div>
+        <div class="section-title">Totals & Discount</div>
         <div class="input-group">
             <label>Discount (%)</label>
-            <input type="number" id="discountPercent" value="0" min="0" max="100" oninput="saveDraft()">
+            <input type="number" id="discountPercent" value="0" min="0" max="100"
+                oninput="saveDraft(); updatePaymentSummary();">
         </div>
 
-        <div style="margin-top: 40px;">
+        <div class="section-title" style="display:flex; align-items:center; gap:8px;">
+            <i class="fa-solid fa-money-bill-wave" style="color: var(--eden);"></i> Payment
+        </div>
+        <div class="row">
+            <div class="input-group">
+                <label>Cash Received (TK)</label>
+                <input type="number" id="paidAmount" value="0" min="0" step="any"
+                    oninput="saveDraft(); updatePaymentSummary();" placeholder="Enter amount received">
+            </div>
+        </div>
+
+        <!-- Live Payment Summary -->
+        <div class="payment-summary-card" id="payment-summary-card">
+            <div class="payment-summary-row">
+                <span class="label">Subtotal</span>
+                <span class="value" id="ps-subtotal">TK 0.00</span>
+            </div>
+            <div class="payment-summary-row" id="ps-discount-row" style="display:none;">
+                <span class="label">Discount</span>
+                <span class="value" id="ps-discount" style="color: var(--danger);">- TK 0.00</span>
+            </div>
+            <div class="payment-summary-row total-row">
+                <span class="label">Grand Total</span>
+                <span class="value" id="ps-grandtotal">TK 0.00</span>
+            </div>
+            <div class="payment-summary-row"
+                style="border-top: 1px dashed var(--border); margin-top: 8px; padding-top: 10px;">
+                <span class="label"><i class="fa-solid fa-hand-holding-dollar"></i> Cash Received</span>
+                <span class="value paid" id="ps-paid">TK 0.00</span>
+            </div>
+            <div class="payment-summary-row">
+                <span class="label"><i class="fa-solid fa-clock"></i> Due Amount</span>
+                <span class="value due" id="ps-due">TK 0.00</span>
+            </div>
+        </div>
+
+        <div style="margin-top: 30px;">
             <button class="btn btn-midnight" onclick="saveToHistory()"><i class="fa-solid fa-check"></i> Save to
                 History</button>
             <div class="row" style="margin-top: 10px;">
@@ -649,6 +830,12 @@
 
     <!-- 2. HISTORY VIEW -->
     <div id="view-history" class="view-section">
+        <div class="history-filters" id="history-filters">
+            <span class="filter-chip active" onclick="filterHistory('all', this)">All</span>
+            <span class="filter-chip" onclick="filterHistory('paid', this)">Paid</span>
+            <span class="filter-chip" onclick="filterHistory('partial', this)">Partial</span>
+            <span class="filter-chip" onclick="filterHistory('unpaid', this)">Unpaid</span>
+        </div>
         <div id="history-list"></div>
     </div>
 
@@ -710,7 +897,25 @@
             <div class="words-section">Amount Chargeable (in words)<br><span id="t-words" class="bold"></span> <span
                     style="float:right">E. & O.E</span></div>
 
-            <!-- Footer Wrapper utilizes margin-top: auto to pin to bottom -->
+            <!-- Payment Info on Invoice -->
+            <div class="inv-payment-info" id="t-payment-info" style="display:none;">
+                <table>
+                    <tr>
+                        <td class="payment-label">Total Amount:</td>
+                        <td class="payment-value" id="t-pay-total">TK 0.00</td>
+                    </tr>
+                    <tr>
+                        <td class="payment-label">Cash Received:</td>
+                        <td class="payment-value" id="t-pay-received" style="color: green;">TK 0.00</td>
+                    </tr>
+                    <tr>
+                        <td class="payment-label">Due Amount:</td>
+                        <td class="payment-value" id="t-pay-due" style="color: red;">TK 0.00</td>
+                    </tr>
+                </table>
+            </div>
+
+            <!-- Footer Wrapper -->
             <div class="inv-footer-wrapper">
                 <div class="inv-footer">
                     <div class="decl"><span style="text-decoration: underline;">Declaration</span><br>We declare that
@@ -730,6 +935,7 @@
         let items = [];
         let invoiceHistory = [];
         let companyProfile = { name: "", addr1: "", addr2: "" };
+        let currentHistoryFilter = 'all';
 
         // --- PWA INSTALL LOGIC ---
         let deferredPrompt;
@@ -753,14 +959,12 @@
             document.getElementById('invDate').valueAsDate = new Date();
             loadHistoryFromStorage();
 
-            // Check Company Profile
             const savedProfile = localStorage.getItem('invoiceApp_companyProfile');
             if (savedProfile) {
                 companyProfile = JSON.parse(savedProfile);
                 unlockApp();
                 loadDraftOrNew();
             } else {
-                // Show Onboarding
                 document.getElementById('onboarding-screen').style.display = 'flex';
             }
         };
@@ -781,7 +985,6 @@
             document.getElementById('main-header').style.display = 'block';
             document.getElementById('main-nav').style.display = 'flex';
 
-            // Populate Settings tab inputs
             document.getElementById('set-compName').value = companyProfile.name;
             document.getElementById('set-compAddr1').value = companyProfile.addr1;
             document.getElementById('set-compAddr2').value = companyProfile.addr2;
@@ -802,8 +1005,9 @@
             if (draft) {
                 loadIntoEditor(JSON.parse(draft));
             } else {
-                items = [{ desc: "BRILUX 22 Watt Day Light", qty: 48, rate: 209.30 }];
+                items = [{ desc: "", qty: 1, rate: 0 }];
                 renderAppItems();
+                updatePaymentSummary();
             }
         }
 
@@ -845,9 +1049,11 @@
                 partyName: document.getElementById('partyName').value,
                 partyPhone: document.getElementById('partyPhone').value,
                 discountPercent: document.getElementById('discountPercent').value,
+                paidAmount: parseFloat(document.getElementById('paidAmount').value) || 0,
                 items: items
             };
             localStorage.setItem('invoiceApp_draft', JSON.stringify(currentData));
+            updatePaymentSummary();
             return currentData;
         }
 
@@ -861,6 +1067,12 @@
             if (currentInvoiceId) {
                 const index = invoiceHistory.findIndex(i => i.id === currentInvoiceId);
                 if (index > -1) invoiceHistory[index] = data;
+                else {
+                    // ID exists but not found — treat as new
+                    data.id = 'INV_' + Date.now();
+                    currentInvoiceId = data.id;
+                    invoiceHistory.unshift(data);
+                }
             } else {
                 data.id = 'INV_' + Date.now();
                 currentInvoiceId = data.id;
@@ -870,7 +1082,7 @@
             saveHistoryToStorage();
             const btn = document.querySelector('.btn-midnight');
             const originalText = btn.innerHTML;
-            btn.innerHTML = '<i class="fa-solid fa-check"></i> Saved';
+            btn.innerHTML = '<i class="fa-solid fa-check"></i> Saved!';
             setTimeout(() => { btn.innerHTML = originalText; }, 2000);
         }
 
@@ -881,11 +1093,19 @@
             document.getElementById('partyName').value = data.partyName || '';
             document.getElementById('partyPhone').value = data.partyPhone || '';
             document.getElementById('discountPercent').value = data.discountPercent || 0;
+            document.getElementById('paidAmount').value = data.paidAmount || 0;
 
             items = data.items || [];
             if (items.length === 0) items.push({ desc: "", qty: 1, rate: 0 });
             renderAppItems();
+            updatePaymentSummary();
             switchTab('editor');
+        }
+
+        // Safe loader for history items — avoids JSON.stringify in onclick
+        function loadHistoryItem(id) {
+            const inv = invoiceHistory.find(i => i.id === id);
+            if (inv) loadIntoEditor(inv);
         }
 
         function deleteFromHistory(id) {
@@ -906,11 +1126,72 @@
             document.getElementById('partyName').value = '';
             document.getElementById('partyPhone').value = '';
             document.getElementById('discountPercent').value = '0';
+            document.getElementById('paidAmount').value = '0';
             document.getElementById('invDate').valueAsDate = new Date();
             items = [{ desc: "", qty: 1, rate: 0 }];
             renderAppItems();
+            updatePaymentSummary();
             saveDraft();
             switchTab('editor');
+        }
+
+        // --- CALCULATE TOTALS ---
+        function calculateTotals() {
+            let subTotal = 0;
+            items.forEach(item => {
+                subTotal += (item.qty || 0) * (item.rate || 0);
+            });
+            const discPercent = parseFloat(document.getElementById('discountPercent').value) || 0;
+            const discAmount = subTotal * (discPercent / 100);
+            const grandTotal = subTotal - discAmount;
+            const paidAmount = parseFloat(document.getElementById('paidAmount').value) || 0;
+            const dueAmount = Math.max(0, grandTotal - paidAmount);
+
+            return { subTotal, discPercent, discAmount, grandTotal, paidAmount, dueAmount };
+        }
+
+        // --- UPDATE LIVE PAYMENT SUMMARY ---
+        function updatePaymentSummary() {
+            // Re-read items from DOM if they exist
+            const rows = document.querySelectorAll('.item-row');
+            if (rows.length > 0) {
+                items = [];
+                rows.forEach(row => {
+                    items.push({
+                        desc: row.querySelector('.i-desc').value,
+                        qty: parseFloat(row.querySelector('.i-qty').value) || 0,
+                        rate: parseFloat(row.querySelector('.i-rate').value) || 0
+                    });
+                });
+            }
+
+            const totals = calculateTotals();
+
+            document.getElementById('ps-subtotal').textContent = 'TK ' + totals.subTotal.toLocaleString('en-IN', { minimumFractionDigits: 2 });
+
+            const discRow = document.getElementById('ps-discount-row');
+            if (totals.discPercent > 0) {
+                discRow.style.display = 'flex';
+                document.getElementById('ps-discount').textContent = '- TK ' + totals.discAmount.toLocaleString('en-IN', { minimumFractionDigits: 2 }) + ' (' + totals.discPercent + '%)';
+            } else {
+                discRow.style.display = 'none';
+            }
+
+            document.getElementById('ps-grandtotal').textContent = 'TK ' + totals.grandTotal.toLocaleString('en-IN', { minimumFractionDigits: 2 });
+            document.getElementById('ps-paid').textContent = 'TK ' + totals.paidAmount.toLocaleString('en-IN', { minimumFractionDigits: 2 });
+
+            const dueEl = document.getElementById('ps-due');
+            dueEl.textContent = 'TK ' + totals.dueAmount.toLocaleString('en-IN', { minimumFractionDigits: 2 });
+
+            // Color the due amount
+            if (totals.dueAmount <= 0) {
+                dueEl.className = 'value fully-paid';
+                dueEl.textContent = 'TK 0.00 (Fully Paid)';
+            } else if (totals.paidAmount > 0) {
+                dueEl.className = 'value due';
+            } else {
+                dueEl.className = 'value due';
+            }
         }
 
         // --- EDITOR UI LOGIC ---
@@ -918,33 +1199,117 @@
             const container = document.getElementById('items-container');
             container.innerHTML = '';
             items.forEach((item, index) => {
-                container.innerHTML += `
-                    <div class="item-row">
-                        <div class="input-group desc-box" style="margin:0;">
-                            <label>Description</label>
-                            <input type="text" class="i-desc" value="${item.desc}" placeholder="Item name..." oninput="saveDraft()">
-                        </div>
-                        <div class="input-group num-box" style="margin:0;">
-                            <label>Qty</label>
-                            <input type="number" class="i-qty" value="${item.qty}" oninput="saveDraft()">
-                        </div>
-                        <div class="input-group num-box" style="margin:0;">
-                            <label>Rate</label>
-                            <input type="number" class="i-rate" value="${item.rate}" oninput="saveDraft()">
-                        </div>
-                        <button class="remove-btn" onclick="removeItem(${index})" title="Remove"><i class="fa-solid fa-xmark"></i></button>
-                    </div>
-                `;
+                const row = document.createElement('div');
+                row.className = 'item-row';
+
+                // Description
+                const descGroup = document.createElement('div');
+                descGroup.className = 'input-group desc-box';
+                descGroup.style.margin = '0';
+                const descLabel = document.createElement('label');
+                descLabel.textContent = 'Description';
+                const descInput = document.createElement('input');
+                descInput.type = 'text';
+                descInput.className = 'i-desc';
+                descInput.value = item.desc;
+                descInput.placeholder = 'Item name...';
+                descInput.addEventListener('input', () => { saveDraft(); updatePaymentSummary(); });
+                descGroup.appendChild(descLabel);
+                descGroup.appendChild(descInput);
+
+                // Quantity
+                const qtyGroup = document.createElement('div');
+                qtyGroup.className = 'input-group num-box';
+                qtyGroup.style.margin = '0';
+                const qtyLabel = document.createElement('label');
+                qtyLabel.textContent = 'Qty';
+                const qtyInput = document.createElement('input');
+                qtyInput.type = 'number';
+                qtyInput.className = 'i-qty';
+                qtyInput.value = item.qty;
+                qtyInput.addEventListener('input', () => { saveDraft(); updatePaymentSummary(); });
+                qtyGroup.appendChild(qtyLabel);
+                qtyGroup.appendChild(qtyInput);
+
+                // Rate
+                const rateGroup = document.createElement('div');
+                rateGroup.className = 'input-group num-box';
+                rateGroup.style.margin = '0';
+                const rateLabel = document.createElement('label');
+                rateLabel.textContent = 'Rate';
+                const rateInput = document.createElement('input');
+                rateInput.type = 'number';
+                rateInput.className = 'i-rate';
+                rateInput.value = item.rate;
+                rateInput.addEventListener('input', () => { saveDraft(); updatePaymentSummary(); });
+                rateGroup.appendChild(rateLabel);
+                rateGroup.appendChild(rateInput);
+
+                // Remove button
+                const removeBtn = document.createElement('button');
+                removeBtn.className = 'remove-btn';
+                removeBtn.title = 'Remove';
+                removeBtn.innerHTML = '<i class="fa-solid fa-xmark"></i>';
+                removeBtn.addEventListener('click', () => { removeItem(index); });
+
+                row.appendChild(descGroup);
+                row.appendChild(qtyGroup);
+                row.appendChild(rateGroup);
+                row.appendChild(removeBtn);
+
+                container.appendChild(row);
             });
         }
 
-        function addItem() { items.push({ desc: "", qty: 1, rate: 0 }); renderAppItems(); saveDraft(); }
-        function removeItem(index) { items.splice(index, 1); renderAppItems(); saveDraft(); }
+        function addItem() {
+            items.push({ desc: "", qty: 1, rate: 0 });
+            renderAppItems();
+            saveDraft();
+            updatePaymentSummary();
+        }
+
+        function removeItem(index) {
+            items.splice(index, 1);
+            if (items.length === 0) items.push({ desc: "", qty: 1, rate: 0 });
+            renderAppItems();
+            saveDraft();
+            updatePaymentSummary();
+        }
+
+        // --- HISTORY FILTER ---
+        function filterHistory(filter, chipEl) {
+            currentHistoryFilter = filter;
+            document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+            if (chipEl) chipEl.classList.add('active');
+            renderHistoryList();
+        }
+
+        // --- HELPER: Get payment status ---
+        function getPaymentStatus(inv) {
+            let total = inv.items.reduce((sum, item) => sum + ((item.qty || 0) * (item.rate || 0)), 0);
+            let discAmount = total * ((inv.discountPercent || 0) / 100);
+            let finalTotal = total - discAmount;
+            let paid = inv.paidAmount || 0;
+            let due = Math.max(0, finalTotal - paid);
+
+            if (finalTotal <= 0) return { status: 'paid', finalTotal, paid, due: 0 };
+            if (due <= 0) return { status: 'paid', finalTotal, paid, due: 0 };
+            if (paid > 0) return { status: 'partial', finalTotal, paid, due };
+            return { status: 'unpaid', finalTotal, paid, due };
+        }
 
         // --- HISTORY UI LOGIC ---
         function renderHistoryList() {
             const container = document.getElementById('history-list');
             container.innerHTML = '';
+
+            let filtered = invoiceHistory;
+            if (currentHistoryFilter !== 'all') {
+                filtered = invoiceHistory.filter(inv => {
+                    const ps = getPaymentStatus(inv);
+                    return ps.status === currentHistoryFilter;
+                });
+            }
 
             if (invoiceHistory.length === 0) {
                 container.innerHTML = `
@@ -959,21 +1324,44 @@
 
             container.innerHTML += `<button class="btn btn-outline" style="margin-bottom: 20px;" onclick="startNewInvoice()"><i class="fa-solid fa-plus"></i> Blank Invoice</button>`;
 
-            invoiceHistory.forEach(inv => {
-                let total = inv.items.reduce((sum, item) => sum + (item.qty * item.rate), 0);
-                let discAmount = total * ((inv.discountPercent || 0) / 100);
-                let finalTotal = total - discAmount;
+            if (filtered.length === 0) {
+                container.innerHTML += `<div style="text-align:center; padding: 40px 0; color: var(--text-muted);"><p>No invoices match this filter.</p></div>`;
+                return;
+            }
+
+            filtered.forEach(inv => {
+                const ps = getPaymentStatus(inv);
                 const dateStr = formatDateDisplay(inv.invDate);
+
+                let statusBadge = '';
+                if (ps.status === 'paid') {
+                    statusBadge = '<span class="status-badge status-paid">Paid</span>';
+                } else if (ps.status === 'partial') {
+                    statusBadge = '<span class="status-badge status-partial">Partial</span>';
+                } else {
+                    statusBadge = '<span class="status-badge status-unpaid">Unpaid</span>';
+                }
+
+                let paymentLine = '';
+                if (ps.status === 'partial') {
+                    paymentLine = `<div class="h-payment-line">Received: TK ${ps.paid.toLocaleString('en-IN', { minimumFractionDigits: 2 })} &bull; Due: TK ${ps.due.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</div>`;
+                } else if (ps.status === 'unpaid' && ps.finalTotal > 0) {
+                    paymentLine = `<div class="h-payment-line">Due: TK ${ps.due.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</div>`;
+                }
+
+                // Escape inv.id for safe use in onclick
+                const safeId = inv.id.replace(/'/g, "\\'");
 
                 container.innerHTML += `
                     <div class="history-item">
                         <div class="h-info">
-                            <h4>#${inv.invNo || 'Draft'} &mdash; <span class="h-price">TK ${finalTotal.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</span></h4>
+                            <h4>#${inv.invNo || 'Draft'} &mdash; <span class="h-price">TK ${ps.finalTotal.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</span> ${statusBadge}</h4>
                             <p>${dateStr} &bull; ${inv.partyName || 'Unknown Customer'}</p>
+                            ${paymentLine}
                         </div>
                         <div class="h-actions">
-                            <button class="icon-btn" title="Edit" onclick='loadIntoEditor(${JSON.stringify(inv)})'><i class="fa-solid fa-pen"></i></button>
-                            <button class="icon-btn delete-btn" title="Delete" onclick="deleteFromHistory('${inv.id}')"><i class="fa-solid fa-trash"></i></button>
+                            <button class="icon-btn" title="Edit" onclick="loadHistoryItem('${safeId}')"><i class="fa-solid fa-pen"></i></button>
+                            <button class="icon-btn delete-btn" title="Delete" onclick="deleteFromHistory('${safeId}')"><i class="fa-solid fa-trash"></i></button>
                         </div>
                     </div>
                 `;
@@ -983,19 +1371,28 @@
         // --- FORMATTING UTILS ---
         function formatDateDisplay(dateString) {
             if (!dateString) return "";
-            const d = new Date(dateString);
+            // Parse as local date to avoid timezone shift
+            const parts = dateString.split('-');
+            if (parts.length !== 3) return dateString;
+            const year = parseInt(parts[0]);
+            const month = parseInt(parts[1]) - 1;
+            const day = parseInt(parts[2]);
             const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-            return `${d.getDate()}-${months[d.getMonth()]}-${d.getFullYear().toString().slice(-2)}`;
+            return `${day}-${months[month]}-${year.toString().slice(-2)}`;
         }
 
         function numberToWordsIndian(num) {
             const a = ['', 'One ', 'Two ', 'Three ', 'Four ', 'Five ', 'Six ', 'Seven ', 'Eight ', 'Nine ', 'Ten ', 'Eleven ', 'Twelve ', 'Thirteen ', 'Fourteen ', 'Fifteen ', 'Sixteen ', 'Seventeen ', 'Eighteen ', 'Nineteen '];
             const b = ['', '', 'Twenty', 'Thirty', 'Forty', 'Fifty', 'Sixty', 'Seventy', 'Eighty', 'Ninety'];
-            let n = num.toString().split('.'); let rupees = parseInt(n[0], 10); let paise = parseInt(n[1] || '0', 10);
+            let n = num.toString().split('.');
+            let rupees = parseInt(n[0], 10);
+            let paise = parseInt(n[1] || '0', 10);
+
             function convertWhole(num) {
                 if ((num = num.toString()).length > 9) return 'overflow';
                 let n = ('000000000' + num).substr(-9).match(/^(\d{2})(\d{2})(\d{2})(\d{1})(\d{2})$/);
-                if (!n) return; let str = '';
+                if (!n) return '';
+                let str = '';
                 str += (n[1] != 0) ? (a[Number(n[1])] || b[n[1][0]] + ' ' + a[n[1][1]]) + 'Crore ' : '';
                 str += (n[2] != 0) ? (a[Number(n[2])] || b[n[2][0]] + ' ' + a[n[2][1]]) + 'Lakh ' : '';
                 str += (n[3] != 0) ? (a[Number(n[3])] || b[n[3][0]] + ' ' + a[n[3][1]]) + 'Thousand ' : '';
@@ -1003,6 +1400,7 @@
                 str += (n[5] != 0) ? ((str != '') ? 'and ' : '') + (a[Number(n[5])] || b[n[5][0]] + ' ' + a[n[5][1]]) : '';
                 return str.trim();
             }
+
             let wordStr = convertWhole(rupees);
             if (paise > 0) wordStr += " and " + convertWhole(paise) + " paisa";
             return wordStr === '' ? 'Zero' : wordStr;
@@ -1012,7 +1410,7 @@
         function populateTemplate() {
             saveDraft();
 
-            // Map Dynamic Company Info
+            // Company Info
             document.getElementById('t-compName').innerText = companyProfile.name;
             document.getElementById('t-compNameSig').innerText = companyProfile.name;
             document.getElementById('t-compAddr1').innerText = companyProfile.addr1;
@@ -1023,27 +1421,64 @@
             document.getElementById('t-partyName').innerText = document.getElementById('partyName').value;
             document.getElementById('t-partyPhone').innerText = document.getElementById('partyPhone').value;
 
-            const tbody = document.getElementById('t-items-body'); tbody.innerHTML = '';
+            const tbody = document.getElementById('t-items-body');
+            tbody.innerHTML = '';
             let totalQty = 0, subTotal = 0;
 
             items.forEach((item, index) => {
-                const amount = item.qty * item.rate; totalQty += item.qty; subTotal += amount;
-                tbody.innerHTML += `<tr><td class="col-sl">${index + 1}</td><td class="col-desc">${item.desc}</td><td class="col-qty bold">${item.qty} Pcs</td><td class="col-rate">${item.rate.toFixed(2)}</td><td class="col-per">Pcs</td><td class="col-amt">${amount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</td></tr>`;
+                const amount = item.qty * item.rate;
+                totalQty += item.qty;
+                subTotal += amount;
+                tbody.innerHTML += `<tr><td class="col-sl">${index + 1}</td><td class="col-desc">${escapeHtml(item.desc)}</td><td class="col-qty bold">${item.qty} Pcs</td><td class="col-rate">${item.rate.toFixed(2)}</td><td class="col-per">Pcs</td><td class="col-amt">${amount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</td></tr>`;
             });
 
             const discPercent = parseFloat(document.getElementById('discountPercent').value) || 0;
             const discAmount = subTotal * (discPercent / 100);
             const finalTotal = subTotal - discAmount;
+            const paidAmount = parseFloat(document.getElementById('paidAmount').value) || 0;
+            const dueAmount = Math.max(0, finalTotal - paidAmount);
 
-            if (discPercent > 0) tbody.innerHTML += `<tr><td class="col-sl"></td><td class="col-desc" style="padding-top:20px; font-style: italic;">Less :<span style="float:right" class="bold">Discount Sales</span></td><td class="col-qty"></td><td class="col-rate text-right">(-)${discPercent}%</td><td class="col-per">%</td><td class="col-amt bold" style="padding-top:20px;">(-)${discAmount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</td></tr>`;
+            if (discPercent > 0) {
+                tbody.innerHTML += `<tr><td class="col-sl"></td><td class="col-desc" style="padding-top:20px; font-style: italic;">Less :<span style="float:right" class="bold">Discount Sales</span></td><td class="col-qty"></td><td class="col-rate text-right">(-)${discPercent}%</td><td class="col-per">%</td><td class="col-amt bold" style="padding-top:20px;">(-)${discAmount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</td></tr>`;
+            }
 
-            // Adding visual empty rows to mimic the image structure
-            const emptyRowsNeeded = 20 - items.length - (discPercent > 0 ? 1 : 0);
-            for (let i = 0; i < emptyRowsNeeded; i++) tbody.innerHTML += `<tr><td></td><td></td><td></td><td></td><td></td><td></td></tr>`;
+            // Empty rows
+            const emptyRowsNeeded = Math.max(0, 18 - items.length - (discPercent > 0 ? 1 : 0));
+            for (let i = 0; i < emptyRowsNeeded; i++) {
+                tbody.innerHTML += `<tr><td></td><td></td><td></td><td></td><td></td><td></td></tr>`;
+            }
 
             tbody.innerHTML += `<tr class="totals-row"><td></td><td></td><td></td><td></td><td></td><td class="col-amt">${subTotal.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</td></tr>`;
             tbody.innerHTML += `<tr class="final-total"><td></td><td class="text-right">Total</td><td class="col-qty">${totalQty} Pcs</td><td></td><td></td><td class="col-amt">TK ${finalTotal.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</td></tr>`;
+
             document.getElementById('t-words').innerText = "BDT " + numberToWordsIndian(finalTotal) + " Only";
+
+            // Payment Info on PDF
+            const paymentInfoEl = document.getElementById('t-payment-info');
+            if (paidAmount > 0 || dueAmount > 0) {
+                paymentInfoEl.style.display = 'block';
+                document.getElementById('t-pay-total').innerText = 'TK ' + finalTotal.toLocaleString('en-IN', { minimumFractionDigits: 2 });
+                document.getElementById('t-pay-received').innerText = 'TK ' + paidAmount.toLocaleString('en-IN', { minimumFractionDigits: 2 });
+                document.getElementById('t-pay-due').innerText = 'TK ' + dueAmount.toLocaleString('en-IN', { minimumFractionDigits: 2 });
+
+                // Style due amount
+                const dueEl = document.getElementById('t-pay-due');
+                if (dueAmount <= 0) {
+                    dueEl.style.color = 'green';
+                    dueEl.innerText = 'TK 0.00 (Fully Paid)';
+                } else {
+                    dueEl.style.color = 'red';
+                }
+            } else {
+                paymentInfoEl.style.display = 'none';
+            }
+        }
+
+        // HTML escape helper
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text || '';
+            return div.innerHTML;
         }
 
         // --- EXPORT FUNCTIONS ---
@@ -1051,7 +1486,10 @@
             populateTemplate();
             const element = document.getElementById('invoice-template');
             const container = document.getElementById('render-container');
-            container.style.position = 'relative'; container.style.visibility = 'visible'; container.style.top = '0'; container.style.left = '0';
+            container.style.position = 'relative';
+            container.style.visibility = 'visible';
+            container.style.top = '0';
+            container.style.left = '0';
 
             const opt = {
                 margin: 0,
@@ -1062,7 +1500,10 @@
             };
 
             html2pdf().set(opt).from(element).save().then(() => {
-                container.style.position = 'absolute'; container.style.visibility = 'hidden'; container.style.top = '-9999px'; container.style.left = '-9999px';
+                container.style.position = 'absolute';
+                container.style.visibility = 'hidden';
+                container.style.top = '-9999px';
+                container.style.left = '-9999px';
             });
         }
 
@@ -1070,18 +1511,27 @@
             populateTemplate();
             const element = document.getElementById('invoice-template');
             const container = document.getElementById('render-container');
-            container.style.position = 'relative'; container.style.visibility = 'visible'; container.style.top = '0'; container.style.left = '0';
+            container.style.position = 'relative';
+            container.style.visibility = 'visible';
+            container.style.top = '0';
+            container.style.left = '0';
 
             html2canvas(element, { scale: 2 }).then(canvas => {
                 const link = document.createElement('a');
                 link.download = 'Invoice_' + (document.getElementById('invNo').value || 'Draft') + '.png';
-                link.href = canvas.toDataURL('image/png'); link.click();
-                container.style.position = 'absolute'; container.style.visibility = 'hidden'; container.style.top = '-9999px'; container.style.left = '-9999px';
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+                container.style.position = 'absolute';
+                container.style.visibility = 'hidden';
+                container.style.top = '-9999px';
+                container.style.left = '-9999px';
             });
         }
 
         // PWA SW Registration
-        if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(err => console.log(err));
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js').catch(err => console.log('SW registration skipped:', err));
+        }
     </script>
 </body>
 
